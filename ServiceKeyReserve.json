@@ -1,0 +1,21 @@
+{
+  "web": {
+    "client_id": "592907867622-j13ulkpncujj844httelda6835e8i0bo.apps.googleusercontent.com",
+    "project_id": "my-project-1589402913612",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "AW68HZc3uPh6J4_gPn307k8q",
+    "redirect_uris": [
+      "https://www.personabilities.com",
+      "http://www.personabilities.com"
+    ],
+    "javascript_origins": [
+      "https://personabilities-example.herokuapp.com",
+      "http://www.personabilities.com",
+      "https://www.personabilities.com",
+      "https://personabilities.com",
+      "http://personabilities.com"
+    ]
+  }
+}

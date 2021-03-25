@@ -1,0 +1,11 @@
+{
+  "date": "Date",
+  "response": [],
+  "result": {},
+  "resultId": "string",
+  "type": "string",
+  "userEmail": "string",
+  "userName": "string",
+  "userId": "string",
+  "companyId": "string"
+}

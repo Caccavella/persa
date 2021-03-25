@@ -1,28 +1,50 @@
-<template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+<template class="app">
+  <div>
+    <navbar></navbar>
+    <router-view />
+    <AppFooter></AppFooter>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from './components/Navbar.vue';
+import AppFooter from './components/Footer.vue';
+import { EventService } from './main';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components: {Navbar, AppFooter},
+  created() {
+    this.getUser();
+  },
+  methods: {
+    getUser() {
+      let vm = this;
+      let signedUser = JSON.parse(localStorage.getItem('user'));
+      if(signedUser && signedUser.email && vm.checkRoute != 'Success') {
+        vm.currentUser = signedUser;
+        vm.signedIn = true;
+        vm.$store.commit('updateSignInStatus', true);
+        vm.$store.commit('updateLoggedUser', signedUser);
+        EventService.$emit('newUser')
+        vm.$router.push('/dashboard')
+      } else if(vm.checkRoute != 'Success') {
+        vm.$router.push('/login')
+      } else {
+        vm.currentUser = signedUser;
+        vm.signedIn = true;
+        vm.$store.commit('updateSignInStatus', true);
+        vm.$store.commit('updateLoggedUser', signedUser);
+        EventService.$emit('newUser')
+      }
+    },
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  margin: 0;
+  font-family: Lin,Gill Sans MT,Calibri,Trebuchet MS,sans-serif;
 }
 </style>

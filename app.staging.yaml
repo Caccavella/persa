@@ -1,0 +1,22 @@
+runtime: nodejs12
+
+env_variables:
+  clientId:
+  secret:
+  NODE_ENV: "staging"
+  baseURL: 'https://staging.personabilities.com'
+  sendApi:
+  GCLOUD_STORAGE_BUCKET: "us.artifacts.model-axe-273818.appspot.com"
+ 
+handlers: 
+- url: /.*
+  script: auto
+  secure: always
+  redirect_http_response_code: "301"
+
+service: personabilities-staging
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 15

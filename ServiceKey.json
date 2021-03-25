@@ -1,0 +1,31 @@
+{
+  "type": "service_account",
+  "project_id": "model-axe-273818",
+  "private_key_id": "24f8034d9191ca96bfd950dc12f0e69ce9d8f474",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDISn5YOrFeAdWp\na7W1SnamfIsLJR1T5Q465Ih7HW1cijQgS/L2Fx7l4zr7YeVYvQpePnB6CF9SfHOy\nCRUlb1m2TkwoDbcDjCs3gCXdBNO2LzH43RYV/XbLfplqQOZ14jq+avalWOoqrvSM\nFkro2nOLwpdODyczwiNDcophqmFQBM5EJ3rTHIufFN5Tzkv9pVvXReZMw/yBtFvX\n6yRjBJwduz7PI17Rh5df8PSUmm2uys4M4chY17pM5BDONHQ2vTJWufTF9IG3eHgy\nIx5nR8qOzceYeFL9TldPtSYuLjMnqIA9XfJ24Yl9SMkwKgsxxexqf/Xm5kf/j0Fv\nVdk9aA/vAgMBAAECggEAVVrxtvXkSnSrslS1jjnakJ64vpolgnA1/UERLK5gwbQf\n/LeBJgC6aSvKIgEZNRTyyzD+y/KvdL6Wq4OVYGuwprF9YQBfQwLEFBXnjOYWtygr\nuqu1Us++hYBBLvfTft9XO3jn/ZUDzgbbLqv9ZnhaD3Bw/JIWmccdMgwpDvAGIov4\njnxRydCwTCmPeDNShBJcihCrBKq5fYgHZsfx/zsR0lvPLs1ML4x4IMY8UO4ce/nQ\n9nFl0E+y2QVMBPZWjn4qQpYntwlgOoyEE2tYO1pf27GMbtXqWUex6qSTlV4lITNK\noeVa2iVoDVQUvmlFaY2RYHZBXa3rkbn73sXy4ND9WQKBgQDsu6+aqoRfzeMb8XQS\n2pIlSDgFySDv7pZcU6GTc3uwMuz++xPsk95q4IgjO2rg5oLaVZYmdHBEYcn2bsRD\n0/MZKLX2JkgU7/CFGAVpMjMnG2huojDoT85+N8DA1wLM1Uph0JYWpgMAFqnVMky6\nzSYsK8bhP0QRLzkdhbymHDnQGwKBgQDYl4nZC2CwDs9pEmhZys5/mXu7YRec64ms\nQ0c4vzzxeiOsI3iU3y4KFf73gV2yi77RjTOPUwjF+keaaWOsKpzrwTzZY6cwSwMN\nxEyWIxT+eDH4aXdV3BcdRu+CHQgM96pMwgHYgJlw20IgmTrRrGBeNprtALwUHTwo\neGO8r/sEvQKBgQCwhXL3vVZfqcJDP9PxixGWwzci+UqaHin4RlQhAuekBxU5PDcr\nHUeoIizhOJkFglzoORFxMznTg6d5Hjcy7IREqlqkZP8yvYd3duXx/wCtlH5WoJIf\naALtkt0j7i+kVRbVwRdpY/iwxDV3R753PCnOngX6R5aVycSpAuQcaMejKQKBgF7V\nYxb0Y15S7b+svqHqKaY29rUhmuwrOTmCr7GKEk4M04ewdECCw67I2L1YGEVv6Jnq\nAFRV3/aHUkiqsmiUs+aJ0nHAr1h2z5x8gagPLkcJK5//1a9zUW+ROpc2zOqYmilH\nnPVFwWlnpzmMvfNGTV+S+xyggLkx38A8jjb0uqzlAoGAdapjsTjf/N88wqQ8HRFc\nJt3W2ucWArCUm6YmK8FaIAi/aYjGKQG3sfhkLoU4I4a1FphQGYpK1pqppPF1lzP0\nSduW4Nb+tbdi2pbqfW+2dOnsOZN/O+Iw+BDyTLCBXQGK06mllUnhdvP/Cqlk5di7\nIUoHbjm5FJq4PC8Z/79iKcY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "personabilities@model-axe-273818.iam.gserviceaccount.com",
+  "client_id": "117422789914222228346",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/personabilities%40model-axe-273818.iam.gserviceaccount.com",
+  "web": {
+    "client_id": "592907867622-j13ulkpncujj844httelda6835e8i0bo.apps.googleusercontent.com",
+    "project_id": "my-project-1589402913612",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "AW68HZc3uPh6J4_gPn307k8q",
+    "redirect_uris": [
+      "https://www.personabilities.com",
+      "http://www.personabilities.com"
+    ],
+    "javascript_origins": [
+      "https://personabilities-example.herokuapp.com",
+      "http://www.personabilities.com",
+      "https://www.personabilities.com",
+      "https://personabilities.com",
+      "http://personabilities.com"
+    ]
+  }
+}

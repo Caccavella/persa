@@ -1,0 +1,6 @@
+{
+  "companyId": "string",
+  "managerIds": [],
+  "createdDate": "date",
+  "subscription": "string"
+}

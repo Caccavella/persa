@@ -1,0 +1,11 @@
+{
+  "email": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "intelResultsId": "string",
+  "name": "string",
+  "password": "string-encoded",
+  "role": ["Manager", "User"],
+  "companyId": "string",
+  "userId": "string"
+}
