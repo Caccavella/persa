@@ -19,7 +19,7 @@
       </div>
       <div class="purchase-report-container">
         <!-- <button v-if="!currentUser.intelResultPaid" @click="checkout()">Purchase Report</button> -->
-        <button v-if="currentUser.intelResultPaid" @click="viewReport()">View Report</button>
+        <el-button type="primary" v-if="checkType" @click="viewReport()">View Report</el-button>
       </div>
     </div>
   </div>
@@ -35,12 +35,12 @@ const stripePromise = loadStripe(config.stripePub);
 
 export default {
   name: 'resultDetail',
-  props: ["selectedResult"],
+  props: ["selectedResult", "type"],
   data() {
     return {
       resultInfo: {},
       resultData: {},
-      successMessage: ""
+      successMessage: "",      
     }
   },
   created() {
@@ -52,6 +52,13 @@ export default {
   computed: {
     currentUser() {
       return this.$store.state.loggedUser;
+    },
+    checkType() {
+      if(this.type == 'intelligence') {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -93,7 +100,8 @@ export default {
       }
     },
     viewReport() {
-      this.$router.push('/report/' + this.resultInfo.result);
+      let url = 'https://www.personabilities.com/result/' + this.resultInfo.result;
+      window.location = url;    
     },
     resendResults() {
       let vm = this;
@@ -150,7 +158,7 @@ h1 {
   justify-content: center;
 }
 
-.purchase-report-container button {
+/* .purchase-report-container button {
   margin-top: 20px;
   background: white;
   border: 2px solid teal;
@@ -159,11 +167,11 @@ h1 {
   padding: 7px 15px;
   font-weight: 600;
   cursor: pointer;
-}
+} */
 
-.purchase-report-container button:hover {
+/* .purchase-report-container button:hover {
   background: rgb(235, 235, 235);
-}
+} */
 
 .success {
   display: flex;

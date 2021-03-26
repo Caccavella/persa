@@ -321,8 +321,8 @@ export default {
             vm.passwordReset = false;
             vm.passwordMessage = '';
           }, 5000);
-          vm.$router.push('/login')
         }
+        vm.$router.push('/login')
       })
     },
     async checkout() {

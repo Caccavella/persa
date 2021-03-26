@@ -10,6 +10,12 @@
         <a href="tel: +1888-888-1733">1-888-888-1733</a>
         <a href="mailto: support@personabilities.com">support@personabilities.com</a>
       </div>
+      <div class="info-row">
+        <font-awesome-icon class="media-icon" size="lg" @click="navExtNew('fb')" :icon="['fab', 'facebook']"></font-awesome-icon>
+        <font-awesome-icon class="media-icon" size="lg" @click="navExtNew('tw')" :icon="['fab', 'twitter-square']"></font-awesome-icon>
+        <font-awesome-icon class="media-icon" size="lg" @click="navExtNew('li')" :icon="['fab', 'linkedin']"></font-awesome-icon>
+        <font-awesome-icon class="media-icon" size="lg" @click="navExtNew('in')" :icon="['fab', 'instagram']"></font-awesome-icon>
+      </div>
       <div class="info-column">
         <span>&copy; {{new Date().getFullYear()}} Personabilities, Inc. All rights reserved</span>
       </div>
@@ -30,6 +36,24 @@ export default ({
       let url = 'https://www.personabilities.com/' + route;
       window.location = url;
     },
+    navExtNew(type) {
+      let url = ''
+      switch(type) {
+        case 'fb':
+          url = 'https://www.facebook.com/Personabilities-110465660703444';
+          break;
+        case 'tw':
+          url = 'https://twitter.com/Personabilitie1';
+          break;
+        case 'li':
+          url = 'https://www.linkedin.com/company/personabilities/';
+          break;
+        case 'in':
+          url = 'https://www.instagram.com/personabilities/';
+          break;
+      }
+      window.open(url, '_blank');
+    }
   }
 })
 </script>
@@ -81,5 +105,9 @@ footer {
 }
 .contact-info .info-column a {
   color: #c5c5c5;
+}
+.media-icon {
+  margin: 5px;
+  cursor: pointer;
 }
 </style>

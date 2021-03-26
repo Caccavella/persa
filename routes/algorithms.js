@@ -102,7 +102,7 @@ module.exports = function(db) {
         refinedArray = [51,54,57,60,63,66,69,72],
         preciseScore = 0,
         preciseArray = [73,75,77,79,81,83],
-        flexibleScore = 0;
+        flexibleScore = 0,
         flexibleArray = [74,76,78,30,82,84];
         
       let firstOutput = '';
@@ -270,7 +270,7 @@ module.exports = function(db) {
         freeArray = [35,38,41,44,47,50],
         relaxedScore = 0,
         relaxedArray = [51,53,55,57,59,61],
-        intenseScore = 0;
+        intenseScore = 0,
         intenseArray = [52,54,56,58,60,62];
         
       let firstOutput = '';
@@ -387,7 +387,33 @@ module.exports = function(db) {
         })
         console.log('res', result, firstOutput, secondOutput);
         // Update Id, update user and results collections, then send result
-        res.send({result: result})        
+        let resultsId = utils.createResultsId();
+        let emailAddress = req.body.user.email;
+        let response = {
+          responseData: mappedValues,
+          userEmail: emailAddress,
+          userName: req.body.user.firstName,
+          result: result,
+          date: new Date(),
+          resultsId: resultsId
+        }
+        console.log(response.result);
+        // if(req.body.user.name) {
+        //   result.userName = req.body.user.name;
+        // } else {
+        //   result.userName = req.body.user.firstName + " " + req.body.user.lastName;                
+        // }
+        // db.collection('results').doc(resultsId).set(response).then(ref => {
+        //   db.collection('users').doc(req.body.user.email).update({temperamentResultsId: resultsId}).then(result => {
+        //     res.send(response);
+        //   }).catch(err3 => {
+        //     res.send(response);            
+        //   })
+        // }).catch(err => {
+        //   console.log("Error: ",err);          
+        //   res.status(403).send('User not authorized')
+        // })  
+        res.send(response)   
     }
   })
 
@@ -413,7 +439,7 @@ module.exports = function(db) {
         minorArray = [51,54,57,60,63,66],
         immaterialScore = 0,
         immaterialArray = [67,69,71,73,75],
-        materialScore = 0;
+        materialScore = 0,
         materialArray = [68,70,72,74,76];
         
       let firstOutput = '';
@@ -528,8 +554,34 @@ module.exports = function(db) {
       let result = neuroTable.find(el => {
         return (el.primary == firstOutput && el.secondary == secondOutput)
       })
+      let resultsId = utils.createResultsId();
+      let emailAddress = req.body.user.email;
+      let response = {
+        responseData: mappedValues,
+        userEmail: emailAddress,
+        userName: req.body.user.firstName,
+        result: result,
+        date: new Date(),
+        resultsId: resultsId
+      }
+      console.log(response.result);
+      // if(req.body.user.name) {
+      //   result.userName = req.body.user.name;
+      // } else {
+      //   result.userName = req.body.user.firstName + " " + req.body.user.lastName;                
+      // }
+      // db.collection('results').doc(resultsId).set(response).then(ref => {
+      //   db.collection('users').doc(req.body.user.email).update({neuroResultsId: resultsId}).then(result => {
+          res.send(response);
+      //   }).catch(err3 => {
+      //     res.send(response);            
+      //   })
+      // }).catch(err => {
+      //   console.log("Error: ",err);          
+      //   res.status(403).send('User not authorized')
+      // })
       // Update Id, update user and results collections, then send result
-      res.send({result: result})        
+      // res.send({result: result})        
     }
   })
 

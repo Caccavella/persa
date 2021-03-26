@@ -610,5 +610,116 @@ export default {
       required: true,
       hidden: false
     },
+    {
+      questionId: 77,
+      type: 'input',
+      text: 'Which is your dominant hand?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 78,
+      type: 'vert-scale',
+      text: 'What is your IQ?',
+      required: false,
+      response: '',
+      answerOptions: [
+        "Sub-100",
+        "100-115",
+        "115-130",
+        "130+"
+      ],
+      hidden: false
+    },
+    {
+      questionId: 79,
+      type: 'input',
+      text: 'Are you neuro-divergent?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 80,
+      type: 'scale',
+      text: 'How happy were you as a child?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 81,
+      type: 'scale',
+      text: 'How happy are you currently?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 82,
+      type: 'vert-scale',
+      text: 'Have you undergone any traumatic life experiences?',
+      required: false,
+      response: '',
+      answerOptions: ["Yes", "No"],
+      hidden: false
+    },
+    {
+      questionId: 83,
+      type: 'input',
+      text: 'What is your sexual orientation?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 84,
+      type: 'scale',
+      text: 'How masculine do you consider yourself to be?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 85,
+      type: 'scale',
+      text: 'How feminine do you consider yourself to be?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 86,
+      type: 'input',
+      text: 'What is your favorite media genre?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 87,
+      type: 'input',
+      text: 'How many tattoos do you have?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 88,
+      type: 'input',
+      text: 'How many piercings do you have?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 89,
+      type: 'input',
+      text: 'What would you consider your clothing style to be?',
+      required: false,
+      response: '',
+      hidden: false
+    },
   ]
 };

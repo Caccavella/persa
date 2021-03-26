@@ -524,5 +524,116 @@ export default {
       answerOptions: [ "Intimacy", "Freedom", "Rejuvenation", "Confidant", "Awe", "Radiance", "Desire", "Proud", "Calm", "Creative", "Romance", "Pensive", "Ease", "Fascination", "Engaged", "Aversion", "Awkwardness", "Oblivious", "Daring", "Disturbed", "Shaken", "Fluidity", "Mortified", "Regret", "Alienation", "Trapped", "Bitterness", "Suspicion", "Sorrow", "Distance", "Furor", "Overwhelmed", "Victimized", "Heartbroken", "Bewildered", "Heavy", ],
       hidden: false
     },
+    {
+      questionId: 66,
+      type: 'input',
+      text: 'What is/would be your favorite species of pet?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 67,
+      type: 'input',
+      text: 'What is your relationship status?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 68,
+      type: 'input',
+      text: 'How many children do you have?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 69,
+      type: 'scale',
+      text: 'How would you rate your athleticism?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 70,
+      type: 'input',
+      text: 'How many times a week do you exercise?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 71,
+      type: 'scale',
+      text: 'How attractive would you consider yourself?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 72,
+      type: 'input',
+      text: 'Describe your current diet',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 73,
+      type: 'scale',
+      text: 'How much do you enjoy spicy food?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 74,
+      type: 'scale',
+      text: 'How likely are you to opt for cuisine of another ethnicity than yours?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 75,
+      type: 'input',
+      text: 'What is your favorite color?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 76,
+      type: 'vert-scale',
+      text: 'What is your sleeping style?',
+      required: false,
+      response: '',
+      answerOptions: [
+        'Normal',
+        'Night Owl',
+        'Early Bird',
+        'Light Sleeper',
+        'Heavy Sleeper'
+      ],
+      hidden: false
+    },
+    {
+      questionId: 77,
+      type: 'input',
+      text: 'What is your favorite kind of music?',
+      required: false,
+      response: '',
+      hidden: false
+    },
+    {
+      questionId: 78,
+      type: 'input',
+      text: 'What is your favorite hobby?',
+      required: false,
+      response: '',
+      hidden: false
+    },
   ]
 };

@@ -1,0 +1,12 @@
+{
+  "locationId": "string",
+  "companyId": "string",
+  "status": "active",
+  "locationType": "string",
+  "divisions": {
+    "sales": {
+      "id": "string",
+      "units": ""
+    }
+  }
+}

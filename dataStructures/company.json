@@ -2,5 +2,9 @@
   "companyId": "string",
   "managerIds": [],
   "createdDate": "date",
-  "subscription": "string"
+  "subscription": "string",
+  "totalAssessments": "num",
+  "availableStatuses": [],
+  "companyTags": [],
+  "locationTypes": []
 }

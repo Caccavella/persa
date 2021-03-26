@@ -23,30 +23,32 @@
         <span class="survey-response">
           <div class="survey-column" v-if="question.type == 'input' || question.type == 'scale'">
             <div class="survey-input" v-if="question.type == 'input'">
-              <input v-if="question.questionId == 'prelim2'" type="email" placeholder="Your Answer" v-model="question.response" :disabled="question.disabled">
-              <input v-else type="text" placeholder="Your Answer" v-model="question.response" :disabled="question.disabled">
+              <el-input v-if="question.questionId == 'prelim2'" type="email" placeholder="Your Answer" v-model="question.response" :disabled="question.disabled"></el-input>
+              <el-input v-else type="text" placeholder="Your Answer" v-model="question.response" :disabled="question.disabled"></el-input>
             </div>
             <div class="survey-scale" v-if="question.type == 'scale'" v-for="option in radioOptions" :key="option">
-              <label>{{option}}</label>
-              <input type="radio" :key="option" :id="option" v-model="question.response"  :value="option" >
+              <!-- <label>{{option}}</label> -->
+              <el-radio v-model="question.response"  :label="option" ></el-radio>
             </div>
           </div>
           <div class="survey-row" v-if="question.type == 'vert-scale'">
             <div class="survey-vert-scale" v-if="question.type == 'vert-scale'" v-for="option in question.answerOptions" :key="option">
-              <input type="radio" :key="option" :id="option" v-model="question.response" :value="option">
-              <label :for="option">{{option}}</label>
+              <!-- <input type="radio" :key="option" :id="option" v-model="question.response" :valu/e="option"> -->
+              <el-radio v-model="question.response"  :label="option" ></el-radio>
+              <!-- <label :for="option">{{option}}</label> -->
             </div>
           </div>
           <div class="survey-row" v-if="question.type == 'word-select'">
-            <div class="survey-vert-scale" v-for="option in question.answerOptions" :key="option">
-              <input type="checkbox" v-model="question.response" name="word" :key="option" :id="option" :value="option" :disabled="question.response.length >= 10 && !question.response.includes(option)">
-              <label :for="option">{{option}}</label>
+            <div class="survey-vert-scale multi-select-checkboxes">
+              <el-checkbox-group v-model="question.response" :min="0" :max="10">
+                <el-checkbox v-for="option in question.answerOptions" :label="option" :key="option">{{option}}</el-checkbox>
+              </el-checkbox-group>
             </div>
           </div>        
         </span>
       </div>
     </div>
-    <button class="submit-button" :disabled="allRequired" v-if="!showMessage && !loading" @click.$once="submitResponses()">Submit</button>
+    <el-button type="primary" class="submit-button" :disabled="allRequired" v-if="!showMessage && !loading" @click.$once="submitResponses()">Submit</el-button>
   <span class="required" v-if="allRequired">Question {{unanswered}} still in need of an answer.</span>
   <!-- <span class="required" v-if="!validatedEmail">Please enter a valid email address where required.</span> -->
     <div class="result-container" v-if="showMessage && type == 'intelligence'">
@@ -58,11 +60,11 @@
       <div class="result-message">
         <span >{{resultShared}}</span>
       </div>
-      <div class="result-text-segment">Your test results will outline the intricacies and depth of your personality and can be found in the full report. <a @click="checkout()">Click here</a> to dig deep into your own personality and purchase your full report.</div>
+      <div class="result-text-segment">Your test results will outline the intricacies and depth of your personality and can be found in the full report. <a @click="viewReport()">Click here</a> to dig deep into your own personality and view your full report.</div>
       <br>
       <br>
       <div class="result-blurb" v-html="resultText"></div>
-      <div class="" style="margin-top: 25px;">
+      <div v-if="9 == 0" class="" style="margin-top: 25px;">
         Our nine-page report will go into detail about these strengths and others. <a @click="checkout()"> Click here</a> to purchase your detailed report so you can realize your full potential.
         <!-- <p> -->
           Included in the Standard Report are your:
@@ -115,7 +117,7 @@
         You are &nbsp; <div class="ad" v-if="vowels.includes(result[0])">an</div><div class="ad" v-else>&nbsp;a</div> &nbsp;<div class="result">{{result}}!</div>
       </div>
       <div class="result-message">
-        <span >{{resultText}}</span>
+        <span v-html="resultText"></span>
       </div>
     </div>
   </div>
@@ -158,7 +160,7 @@ export default {
       let vm = this;
       if(vm.survey && vm.survey.questions) {
         return vm.survey.questions.some(el => {
-          if(el.required && el.response === '') {
+          if((el.required && el.response === '') || (el.type == 'word-select' && el.required && !el.response.length)) {
             if(vm.type == 'intelligence') {
               vm.unanswered = el.questionId-1;
             } else {
@@ -270,17 +272,26 @@ export default {
             let result = response.data.result;
             vm.result = result.name;
             vm.resultShared = result.shared;
-            vm.resultText = result.text.replace("[FIRST NAME]", firstName);
+            let resultText = result.text.replace("[FIRST NAME]", firstName);
+            resultText = resultText.split('. ');
+            resultText[9] += '.<br><br>';
+            if(resultText[20]) resultText[20] += '.<br><br>';
+            vm.resultText = resultText.join('. ').replace(/<br><br>\./g, '<br><br>');
             // vm.resultImage = result.image;
             vm.resultPercentage = result.percent*1;
             vm.showMessage = true;
             vm.loading = false;
+            vm.$store.commit('updateNewResultFlag', true);
           } else {
             console.log("an Error has occurred.");
             vm.loading = false;
           }
         })
       }
+    },
+    viewReport() {
+      let url = 'https://www.personabilities.com/result/' + this.result;
+      window.location = url;    
     },
     async checkout() {
       let vm = this;
@@ -372,13 +383,14 @@ export default {
 
 .survey-input {
   margin-top: 10px;
+  width: 100%;
   position: relative;
 }
 
 .survey-input input {
   border: none;
   border-bottom: 1px solid lightgrey;
-  width: 150%;
+  /* width: 150%; */
   background: transparent;
   position: static;
 }
@@ -403,7 +415,11 @@ export default {
 .survey-vert-scale {
   display: flex;
   flex-direction: row;
+  width: 100%;
   margin-top: 10px;
+}
+.multi-select-checkboxes {
+  margin-left: 40px;
 }
 
 .survey-vert-scale input{
@@ -418,14 +434,8 @@ export default {
 }
 
 .submit-button {
-  margin: 5px 20px;
-  padding: 10px 30px;
-  color: white;
-  background: #3CAB93;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  margin-top: 10px;
   font-size: 19px;
 }
 
@@ -476,6 +486,10 @@ export default {
 a {
   border-bottom: 1px solid blue;
   cursor: pointer;
+}
+
+.el-checkbox-group .el-checkbox {
+  min-width: 120px;
 }
 
 @media(max-width: 820px) {

@@ -10,7 +10,6 @@
 import Navbar from './components/Navbar.vue';
 import AppFooter from './components/Footer.vue';
 import { EventService } from './main';
-
 export default {
   name: 'App',
   components: {Navbar, AppFooter},

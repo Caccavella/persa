@@ -1,27 +1,22 @@
 <template>
   <div class="card-container">
-    <md-card>
-      <md-card-header>
-        <div class="md-title">Recent Assessments Completed</div>
-      </md-card-header>
-    </md-card>
-    <div class="card">
-      <div class="title">Recent Assessments Completed</div>
-      <div class="data-table">
-        <span>Assessment</span>
-        <span>User Name</span>
-        <span>Result Name</span>
-        <span>User Id</span>
-        <span>Result Id</span>
-      </div>
-      <div class="data-table" v-for="user in companyData.recentUsers" :key="user.userId">
-        <span>{{user.resultType}}</span>
-        <span>{{user.userName}}</span>
-        <span>{{user.resultName}}</span>
-        <span>{{user.userId}}</span>
-        <span>{{user.resultId}}</span>
-      </div>
-    </div>
+    <el-card width="500" class="top-card">
+      <div slot="header">Recent Assessments Completed</div>
+      <el-table :data="companyData.recentUsers" stripe>
+        <el-table-column prop="resultType" label="Assessment" width="100"></el-table-column>
+        <el-table-column prop="userName" label="User Name" width="180"></el-table-column>
+        <el-table-column prop="resultName" label="Result Name" width="120"></el-table-column>
+        <el-table-column prop="userId" label="User Id" width="120"></el-table-column>
+        <el-table-column prop="resultId" label="Result Id" width="120"></el-table-column>
+        <div class="empty" slot="empty">
+          <p>No users have taken a recent assessment.</p>
+          <p><el-button @click="navTo('/inviteUsers')">Invite User to Assessment</el-button></p>
+        </div>
+      </el-table>
+    </el-card>   
+    <el-card class="top-card">
+
+    </el-card> 
   </div>
 </template>
 
@@ -67,12 +62,12 @@ export default ({
     }
   },
   created() {
-    this.getCompanyOverviewData();
+    // this.getCompanyOverviewData();
   },
   methods: {
     getCompanyOverviewData() {
       let vm = this;
-      let url = config.backendUrl + '/companyDataOverview' + vm.currentUser.companyId;
+      let url = config.backendUrl + '/companyDataOverview/' + vm.currentUser.companyId;
       axios.get(url).then(response => {
         if(response) {
           vm.companyData = response;
@@ -80,6 +75,9 @@ export default ({
       }).catch(err => {
         console.log("Something went wrong", err);
       })
+    },
+    navTo(route) {
+      this.$router.push(route);
     }
   }
 })
@@ -97,29 +95,8 @@ export default ({
   min-height: 82.6vh;
 }
 
-.card {
-  background: whitesmoke;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 5px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, .25);
-}
-.card .title {
-  font-size: 20px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.data-table {
-  display: flex;
-  flex-direction: row;
-  border-bottom: 1px solid rgba(128, 128, 128, .5);
-}
-
-.data-table span {
-  margin: 5px;
-  min-width: 120px;
+.top-card {
+  margin: 20px;
 }
 
 

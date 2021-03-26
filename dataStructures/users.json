@@ -2,10 +2,15 @@
   "email": "string",
   "firstName": "string",
   "lastName": "string",
-  "intelResultsId": "string",
+  "results": [
+    {
+      "result": "Adventurer"
+    }
+  ],
   "name": "string",
   "password": "string-encoded",
-  "role": ["Manager", "User"],
   "companyId": "string",
-  "userId": "string"
+  "userId": "string",
+  "tags": [{"type": "IT", "result": "Adventurer", "assessment": "Intelligence"}],
+  "status": ["Current Employee", "Potential Employee", "Former Employee", "Etc."]
 }

@@ -1,0 +1,9 @@
+{
+  "email": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "name": "string",
+  "password": "string-encoded",
+  "companyId": "string",
+  "managerId": "string"
+}
