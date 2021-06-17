@@ -34,7 +34,7 @@ export default ({
   methods: {
     navExt(route) {
       let url = 'https://www.personabilities.com/' + route;
-      window.location = url;
+      window.open(url, '_blank');
     },
     navExtNew(type) {
       let url = ''
@@ -109,5 +109,20 @@ footer {
 .media-icon {
   margin: 5px;
   cursor: pointer;
+}
+@media (max-width: 600px) {
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    /* width: 100%; */
+    justify-content: space-between;
+    align-content: center;
+  }
+  .legal-container {
+    position: relative;
+    margin-left: 50%;
+    transform: translateX(-45%);
+  }
 }
 </style>

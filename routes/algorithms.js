@@ -167,31 +167,31 @@ module.exports = function(db) {
           firstOutput = sortArr[0].type;
         }
       } else if(sortArr[2].score > sortArr[3].score) {
-          if(sortArr[0].type == 'Synergistic' || sortArr[1].type == 'Synergistic' || sortArr[2].type == 'Synergistic') {
-            firstOutput = 'Synergistic';
-          } else if(sortArr[0].type == 'Autonomous' || sortArr[1].type == 'Autonomous' || sortArr[2].type == 'Autonomous') {
-            if(sortArr[0].type == 'Autonomous') {
-              if((sortArr[1].type == 'Strong' && sortArr[2].type == 'Humane') || (sortArr[2].type == 'Strong' && sortArr[1].type == 'Humane')) {
-                firstOutput = 'Humane';
-              } else {              
-                firstOutput = sortArr[1].type;
-              }
-            } else if(sortArr[1].type == 'Autonomous') {
-              if((sortArr[0].type == 'Strong' && sortArr[2].type == 'Humane') || (sortArr[2].type == 'Strong' && sortArr[0].type == 'Humane')) {
-                firstOutput = 'Humane';
-              } else {
-                firstOutput = sortArr[0].type;
-              }
-            } else if(sortArr[2].type == 'Autonomous') {
-              if((sortArr[0].type == 'Strong' && sortArr[1].type == 'Humane') || (sortArr[1].type == 'Strong' && sortArr[0].type == 'Humane')) {
-                firstOutput = 'Humane';
-              } else {
-                firstOutput = sortArr[0].type;
-              }
+        if(sortArr[0].type == 'Synergistic' || sortArr[1].type == 'Synergistic' || sortArr[2].type == 'Synergistic') {
+          firstOutput = 'Synergistic';
+        } else if(sortArr[0].type == 'Autonomous' || sortArr[1].type == 'Autonomous' || sortArr[2].type == 'Autonomous') {
+          if(sortArr[0].type == 'Autonomous') {
+            if((sortArr[1].type == 'Strong' && sortArr[2].type == 'Humane') || (sortArr[2].type == 'Strong' && sortArr[1].type == 'Humane')) {
+              firstOutput = 'Humane';
+            } else {              
+              firstOutput = sortArr[1].type;
+            }
+          } else if(sortArr[1].type == 'Autonomous') {
+            if((sortArr[0].type == 'Strong' && sortArr[2].type == 'Humane') || (sortArr[2].type == 'Strong' && sortArr[0].type == 'Humane')) {
+              firstOutput = 'Humane';
             } else {
               firstOutput = sortArr[0].type;
             }
+          } else if(sortArr[2].type == 'Autonomous') {
+            if((sortArr[0].type == 'Strong' && sortArr[1].type == 'Humane') || (sortArr[1].type == 'Strong' && sortArr[0].type == 'Humane')) {
+              firstOutput = 'Humane';
+            } else {
+              firstOutput = sortArr[0].type;
+            }
+          } else {
+            firstOutput = sortArr[0].type;
           }
+        }
       } else {
         firstOutput = sortArr[0].type;
       }      
@@ -214,37 +214,46 @@ module.exports = function(db) {
 
       // Get Result From Reference
 
-        let result = cultureReference.find(el => {
-          return (el.primary == firstOutput && el.secondary == secondOutput)
+      let result = cultureReference.find(el => {
+        return (el.primary == firstOutput && el.secondary == secondOutput)
+      })
+      // console.log('res', result, firstOutput, secondOutput);
+      // Update Id, update user and results collections, then send result
+      let resultsId = utils.createResultsId();
+      let emailAddress = req.body.user.email;
+      let response = {
+        responseData: mappedValues,
+        userEmail: emailAddress,
+        userName: req.body.user.firstName,
+        result: result,
+        date: new Date(),
+        resultsId: resultsId
+      }
+      console.log(response.result);
+      // if(req.body.user.name) {
+      //   result.userName = req.body.user.name;
+      // } else {
+      //   result.userName = req.body.user.firstName + " " + req.body.user.lastName;                
+      // }
+      // db.collection('results').insert(response)
+      // db.collection('users').findOneAndUpdate({email: req.body.user.email}, {$set: {cultureResultsId: resultsId}}, function(err, result) {
+      //   if(err) {
+      //     console.log("something went wrong");
+      //     res.status(500).send(err)
+      //   } else {
+      //     res.send(response)
+      //   }
+      // })
+      db.collection('results').doc(resultsId).set(response).then(ref => {
+        db.collection('users').doc(req.body.user.email).update({cultureResultsId: resultsId}).then(result => {
+          res.send(response);
+        }).catch(err3 => {
+          res.send(response);            
         })
-        // console.log('res', result, firstOutput, secondOutput);
-        // Update Id, update user and results collections, then send result
-        let resultsId = utils.createResultsId();
-        let emailAddress = req.body.user.email;
-        let response = {
-          responseData: mappedValues,
-          userEmail: emailAddress,
-          userName: req.body.user.firstName,
-          result: result,
-          date: new Date(),
-          resultsId: resultsId
-        }
-        console.log(response.result);
-        // if(req.body.user.name) {
-        //   result.userName = req.body.user.name;
-        // } else {
-        //   result.userName = req.body.user.firstName + " " + req.body.user.lastName;                
-        // }
-        db.collection('results').doc(resultsId).set(response).then(ref => {
-          db.collection('users').doc(req.body.user.email).update({cultureResultsId: resultsId}).then(result => {
-            res.send(response);
-          }).catch(err3 => {
-            res.send(response);            
-          })
-        }).catch(err => {
-          console.log("Error: ",err);          
-          res.status(403).send('User not authorized')
-        })
+      }).catch(err => {
+        console.log("Error: ",err);          
+        res.status(403).send('User not authorized')
+      })
     }
   })
 
@@ -403,17 +412,26 @@ module.exports = function(db) {
         // } else {
         //   result.userName = req.body.user.firstName + " " + req.body.user.lastName;                
         // }
-        // db.collection('results').doc(resultsId).set(response).then(ref => {
-        //   db.collection('users').doc(req.body.user.email).update({temperamentResultsId: resultsId}).then(result => {
-        //     res.send(response);
-        //   }).catch(err3 => {
-        //     res.send(response);            
-        //   })
-        // }).catch(err => {
-        //   console.log("Error: ",err);          
-        //   res.status(403).send('User not authorized')
-        // })  
-        res.send(response)   
+        db.collection('results').doc(resultsId).set(response).then(ref => {
+          db.collection('users').doc(req.body.user.email).update({temperamentResultsId: resultsId}).then(result => {
+            res.send(response);
+          }).catch(err3 => {
+            res.send(response);            
+          })
+        }).catch(err => {
+          console.log("Error: ",err);          
+          res.status(403).send('User not authorized')
+        })  
+        // db.collection('results').insert(response)
+        // db.collection('users').findOneAndUpdate({email: req.body.user.email}, {$set: {temperamentResultsId: resultsId}}, function(err, result) {
+        //   if(err) {
+        //     console.log("something went wrong");
+        //     res.status(500).send(err)
+        //   } else {
+        //     res.send(response)
+        //   }
+        // })
+        // res.send(response)   
     }
   })
 
@@ -570,15 +588,24 @@ module.exports = function(db) {
       // } else {
       //   result.userName = req.body.user.firstName + " " + req.body.user.lastName;                
       // }
-      // db.collection('results').doc(resultsId).set(response).then(ref => {
-      //   db.collection('users').doc(req.body.user.email).update({neuroResultsId: resultsId}).then(result => {
+      db.collection('results').doc(resultsId).set(response).then(ref => {
+        db.collection('users').doc(req.body.user.email).update({neuroResultsId: resultsId}).then(result => {
           res.send(response);
-      //   }).catch(err3 => {
-      //     res.send(response);            
-      //   })
-      // }).catch(err => {
-      //   console.log("Error: ",err);          
-      //   res.status(403).send('User not authorized')
+        }).catch(err3 => {
+          res.send(response);            
+        })
+      }).catch(err => {
+        console.log("Error: ",err);          
+        res.status(403).send('User not authorized')
+      })
+      // db.collection('results').insert(response)
+      // db.collection('users').findOneAndUpdate({email: req.body.user.email}, {$set: {neuroResultsId: resultsId}}, function(err, result) {
+      //   if(err) {
+      //     console.log("something went wrong");
+      //     res.status(500).send(err)
+      //   } else {
+      //     res.send(response)
+      //   }
       // })
       // Update Id, update user and results collections, then send result
       // res.send({result: result})        
@@ -631,9 +658,9 @@ module.exports = function(db) {
           let subtypes = ['A', 'B', 'C', 'D'];
           // console.log('yest', mappedValues);
           mappedValues.map((el, ind) => {
-            if(ind > 2 && ind < 69) {
-              let q = "q" + (el.questionId-1);
-              // console.log(q);
+            if(el.questionId < 67) {
+              let q = "q" + (el.questionId);
+              console.log(q);
               let diff;
               let res = el.response;
               // console.log(res);
@@ -901,6 +928,15 @@ module.exports = function(db) {
             return a.score - b.score;
           })
           console.log(scoreList);
+          let leastScore = scoreList[scoreList.length-1].score;
+          let confidence = 74;
+          if(leastScore < 75) {
+            confidence = 96;
+          } else if(leastScore < 101) {
+            confidence = 86;
+          } else if(leastScore < 126) {
+            confidence = 76;
+          }
 
           let data = reference.find(el => {
             let name = el.name.toLowerCase();
@@ -911,31 +947,47 @@ module.exports = function(db) {
           let response = {
             responseData: mappedValues,
             userEmail: emailAddress,
-            userName: req.body.user.firstName,
             result: data,
+            confidence,
             date: new Date(),
             resultsId: resultsId
           }
-          console.log(response.result);
-          if(req.body.user.name) {
-            data.userName = req.body.user.name;
-          } else {
-            data.userName = req.body.user.firstName + " " + req.body.user.lastName;                
-          }
+          // db.collection('results').doc(resultsId).set(response).then(ref => {
+          //   db.collection('users').doc(req.body.user.email).update({intelResultsId: resultsId, intelResultPaid: true}).then(result => {
+          //     let id = utils.createPasswordResetId();
+          //     let url = config.backendUrl + '/users/success/' + id + '/' + req.body.user.email;
+          //     // res.send(response);
+          //     res.redirect(url);
+          //   }).catch(err3 => {
+          //     res.send(response);            
+          //   })
+          //   }).catch(err => {
+          //       console.log("Error: ",err);
+              
+          //       res.status(403).send('User not authorized')
+          //     })
           db.collection('results').doc(resultsId).set(response).then(ref => {
-            db.collection('users').doc(req.body.user.email).update({intelResultsId: resultsId, intelResultPaid: true}).then(result => {
-              let id = utils.createPasswordResetId();
-              let url = config.backendUrl + '/users/success/' + id + '/' + req.body.user.email;
-              // res.send(response);
-              res.redirect(url);
+            db.collection('users').doc(req.body.user.email).update({intelResultsId: resultsId}).then(result => {
+              res.send(response);
             }).catch(err3 => {
               res.send(response);            
             })
-            }).catch(err => {
-                console.log("Error: ",err);
-              
-                res.status(403).send('User not authorized')
-              })
+          }).catch(err => {
+            console.log("Error: ",err);          
+            res.status(403).send('User not authorized')
+          })
+          // db.collection('results').insert(response)
+          // db.collection('users').findOneAndUpdate({email: req.body.user.email}, {$set: {intelResultsId: resultsId, intelResultPaid: true}}, function(err, result) {
+          //   if(err) {
+          //     console.log("something went wrong");
+          //     res.status(500).send(err)
+          //   } else {
+          //     let id = utils.createPasswordResetId();
+          //     let url = config.backendUrl + '/users/success/' + id + '/' + req.body.user.email;
+          //     // res.send(response);
+          //     res.redirect(url);
+          //   }
+          // })
           //   } else {
           //     res.status(404).send('User Not Found')
           //   }

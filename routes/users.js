@@ -1,4 +1,3 @@
-const { util } = require('client-sessions');
 
 module.exports = function(db) {
   'use strict'
@@ -8,7 +7,7 @@ module.exports = function(db) {
   var defaultClient = sendInBlueClient.ApiClient.instance;
   var apiKey = defaultClient.authentications['api-key'];
   var config = require('../config')
-  apiKey.apiKey = process.env.sendApi;
+  apiKey.apiKey = config.sendApi;
   const bcrypt = require('bcrypt');
   // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
   // apiKey.apiKeyPrefix = 'Token';
@@ -73,6 +72,45 @@ module.exports = function(db) {
           let dataPoints = doc.data();
           req.session.user = dataPoints;
           res.send({success: true, user: dataPoints}) 
+        } else {
+          res.send({success: false, message: 'Email not found'})
+        }        
+      })
+    }
+  })
+
+  theseRoutes.post('/getUserResponse', function(req, res) {
+    if(!req.body.email) {
+      res.status(400).send('Missing Params')
+    } else {
+      db.collection('users').doc(req.body.email).get().then(doc => {
+        if(doc && doc.exists) {
+          let dataPoints = doc.data();
+          let searchTerm = dataPoints.intelResultsId;
+          if(req.body.type == 'neuro') {
+            searchTerm = dataPoints.neuroResultsId;
+          } else if(req.body.type == 'temperament') {
+            searchTerm = dataPoints.temperamentResultsId;
+          } else if(req.body.type == 'culture') {
+            searchTerm = dataPoints.cultureResultsId;
+          }
+          if(searchTerm) {
+            db.collection('results').doc(searchTerm).get().then(doc => {
+              if(doc && doc.exists) {
+                let response = doc.data();
+                let csvString = '';
+                csvString += response.resultsId + ',' + response.result.name + '\n';
+                response.responseData.map(el => {
+                  csvString += el.questionId + ',' + el.response + '\n'
+                })
+                res.send({success: true, csv: csvString})
+              } else {
+                res.send({success: false, message: 'Response not found'})
+              }
+            })
+          } else {          
+            res.send({success: false, message: "Response for that type doesn't exist"})
+          }
         } else {
           res.send({success: false, message: 'Email not found'})
         }        

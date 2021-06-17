@@ -8,31 +8,32 @@
           <div class="notice" v-if="forgotPassword && !passwordReset">We'll send an email to this address for you to reset your password.</div>
           <div class="notice" v-if="forgotPassword && passwordReset">{{passwordMessage}}</div>
           <span class="input-field" v-if="!passwordReset">
-            <div class="input-icon"></div>
-            <input type="email" placeholder="email" v-model="currentUser.email">
+            <el-input type="email" placeholder="email" v-model="currentUser.email">
+              <i slot="prepend" class="el-icon-user"></i>
+            </el-input>
           </span>
-          <span class="input-field" v-if="!forgotPassword">
-            <div class="input-icon"></div>
-            <input type="password" placeholder="password" @keydown.enter="logInEmPass()" v-model="currentUser.password">
+          <span class="input-field" v-if="!forgotPassword">            
+            <el-input type="password" placeholder="password" @keyup.enter="logInEmPass()" v-model="currentUser.password">
+              <i slot="prepend" class="el-icon-key"></i>
+            </el-input>
           </span>
           <div class="error-container" v-if="errorMessage">{{errorMessage}}</div>
           <div class="button-container">
-            <button class="login-button" @click="loginStep = 2" v-if="!forgotPassword" >Sign Up</button>
-            <button class="login-button" v-if="!forgotPassword" @click="logInEmPass()">Log In</button>
+            <el-button type="warning" @click="loginStep = 2" v-if="!forgotPassword" >Sign Up</el-button>
+            <el-button type="warning" v-if="!forgotPassword" @click="logInEmPass()">Log In</el-button>
             <span class="forgot-link return" v-if="forgotPassword && !passwordReset" @click="forgotPassword = false">Cancel</span>
-            <button class="login-button" v-if="forgotPassword && !passwordReset" @click="resetPassword()">Send Password Reset</button>
-            <button class="login-button" v-if="forgotPassword && passwordReset" @click="passwordReset = false">Return To Login</button>
+            <el-button type="warning" class="login-button" v-if="forgotPassword && !passwordReset" @click="resetPassword()">Send Password Reset</el-button>
+            <el-button type="primary" class="login-button" v-if="forgotPassword && passwordReset" @click="passwordReset = false">Return To Login</el-button>
           </div>
           <div class="social-login-container">
             <i class="social-login">
-              <span class="social-separator">- or -</span>
-              <!-- <GoogleLogin :params="params" :onSuccess="onSignIn" ><img src="../assets/general/google-logo.svg">Sign in with Google</GoogleLogin>  -->
+              <GoogleLogin :params="params" :onSuccess="onSignIn" ><img src="../assets/general/google-logo.svg">Sign in with Google</GoogleLogin> 
             </i>
           </div>
         </div>
         <div class="forgot-link" v-if="!forgotPassword" @click="forgotPassword = true">Forgot Your Password?</div>
         <div class="signin-footer" v-if="!forgotPassword" >
-          By logging in you agree to the <router-link to="/terms" target="_blank">Terms of Service</router-link> and <router-link to="/privacy" target="_blank">Privacy Policy</router-link>
+          By signing up you agree to the<br> <el-link type="primary" @click="navExt('terms-of-use')">Terms of Service</el-link> and <el-link @click="navExt('privacy-policy')" type="primary">Privacy Policy</el-link>
         </div>
       </div>
       <div class="modal-body taller" @click.stop v-if="loginStep === 2">        
@@ -41,36 +42,36 @@
           <i class="social-login" @click="clickRef()">G</i>
         </div> -->
         <div class="signin">
-          <span class="input-field">
-            <div class="input-icon"></div>
-            <input type="text" placeholder="firstname" v-model="currentUser.firstName">
+          <span class="input-field">            
+            <el-input type="text" placeholder="firstname" v-model="currentUser.firstName">              
+            </el-input>
           </span>
-          <span class="input-field">
-            <div class="input-icon"></div>
-            <input type="text" placeholder="lastname" v-model="currentUser.lastName">
+          <span class="input-field">            
+            <el-input type="text" placeholder="lastname" v-model="currentUser.lastName">              
+            </el-input>
           </span>
-          <span class="input-field">
-            <div class="input-icon"></div>
-            <input type="email" placeholder="email" v-model="currentUser.email">
+          <span class="input-field">            
+            <el-input type="email" placeholder="email" v-model="currentUser.email">              
+            </el-input>
           </span>
-          <span class="input-field">
-            <div class="input-icon"></div>
-            <input type="password" placeholder="password" v-model="currentUser.password">
+          <span class="input-field">            
+            <el-input type="password" placeholder="password" v-model="currentUser.password">              
+            </el-input>
           </span>
-          <span class="input-field">
-            <div class="input-icon"></div>
-            <input type="password" placeholder="confirm password" v-model="currentUser.confirmPassword">
+          <span class="input-field">            
+            <el-input type="password" placeholder="confirm password" v-model="currentUser.confirmPassword">              
+            </el-input>
           </span>
           <div class="error-container" v-if="errorMessage">{{errorMessage}}</div>
           <div class="button-container">
             <!-- <button class="login-button">Sign Up</button> -->
             <span class="forgot-link return" @click="loginStep = 1">Log In</span>
-            <button class="login-button" @click="signUp()">Submit</button>
+            <el-button type="warning" @click="signUp()">Submit</el-button>
           </div>
         </div>       
         <!-- <div ref="googleClick" style="display: none;" id="google-signin-button"></div> -->
         <div class="signin-footer">
-          By signing up you agree to the <a href="https://www.personabilities.com/terms-of-use" target="_blank">Terms of Service</a> and <a href="https://www.personabilities.com/privacy-policy" target="_blank">Privacy Policy</a>
+          By signing up you agree to the<br> <el-link type="primary" @click="navExt('terms-of-use')">Terms of Service</el-link> and <el-link @click="navExt('privacy-policy')" type="primary">Privacy Policy</el-link>
         </div>
       </div>
     </div>
@@ -82,12 +83,12 @@ import axios from 'axios'
 import config from '../../config';
 import {EventService} from '../main'
 import { loadStripe } from '@stripe/stripe-js';
-// import GoogleLogin from 'vue-google-login';
+import GoogleLogin from 'vue-google-login';
 const stripePromise = loadStripe(config.stripePub);
 
 export default {
   name: 'Login',
-  // components: {GoogleLogin},
+  components: {GoogleLogin},
   data() {
     return {
       showModal: false,
@@ -104,7 +105,7 @@ export default {
         password: '',
         confirmPassword: ''
       },
-      params: {},
+      params: {client_id: config.clientId},
       errorMessage: '',
       forgotPassword: false,
       passwordReset: false,
@@ -112,8 +113,11 @@ export default {
     }
   },
   mounted() {
-    if(this.signedIn) this.$router.push('/dashboard')
-    this.params = {client_id: config.clientId}
+    if(this.signedIn) {
+      console.log(this.signedIn);
+      this.$router.push('/dashboard')
+    }
+    // this.params = {client_id: config.clientId}
     window.addEventListener("google-loaded", this.init);
     // if(gapi) {
     //   gapi.signin2.render('google-signin-button', {
@@ -310,6 +314,10 @@ export default {
       this.menuOpen = false;
       this.$router.push(route)
     },
+    navExt(route) {
+      let url = 'https://www.personabilities.com/' + route;
+      window.open(url, "_blank");
+    },
     resetPassword() {
       let vm = this;
       let url = config.baseUrl + '/users/resetPassword'
@@ -322,7 +330,7 @@ export default {
             vm.passwordMessage = '';
           }, 5000);
         }
-        vm.$router.push('/login')
+        vm.forgotPassword = false;
       })
     },
     async checkout() {
@@ -437,7 +445,7 @@ export default {
 
   .modal-body h4 {
     position: absolute;
-    top: -20px;
+    top: -30px;
     left: 20px;
     font-size: 28px;
   }
@@ -495,9 +503,6 @@ export default {
     text-align: center;
   }
 
-  .social-separator {
-    padding-bottom: 10px;
-  }
 
   .social-login {
     width: 100%; 
@@ -511,17 +516,8 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
-  }
-
-  .signin button {
-    height: 33px;
-    background: #FFC312;
-    border: none;
-    cursor: pointer;
-    min-width: 100px;
-    border-radius: 4px;
-    font-size: 17px;
+    align-items: center;
+    margin: 5px 0 25px 0;
   }
 
 
@@ -546,7 +542,8 @@ export default {
   .forgot-link {
     color: steelblue;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
   .return  {
     margin-top: 5px;
@@ -561,6 +558,8 @@ export default {
   }
   .signin-footer a {
     color: steelblue;
+    transform: translateY(-2px);
+    font-size: 16px;
   }
 
   header {

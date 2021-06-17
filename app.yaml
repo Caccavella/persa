@@ -1,7 +1,6 @@
 service: app
 
 runtime: nodejs12
-
 # env_variables:
 #   clientId: "869656362729-2ikbgfuvtdp96f08usqb28kv68mnluik.apps.googleusercontent.com"
 #   secret: "7YJHTkLpHUgHa6YsKU6IY_8k"
@@ -22,3 +21,8 @@ handlers:
   script: auto
   secure: always
   redirect_http_response_code: "301"
+  
+- url: /
+  static_files: index.js
+  upload: index.js
+  expiration: 1s

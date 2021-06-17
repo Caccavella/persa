@@ -7,15 +7,13 @@
       <div class="menu-display">
         <span v-if="(!GoogleAuth || (GoogleAuth && !GoogleAuth.isSignedIn.le)) && !signedIn" @click="logIn()">Log In</span>
         <span v-else @click="logOut()">Log Out</span>
-        <span @click="navTo('/dashboard')">Dashboard</span>
-        <input type="text" v-if="loggedUser.email == 'ace4257@aol.com'" v-model="spoofer" v-on:keydown.enter="spoofUser()">
-        <button v-if="loggedUser.email == 'ace4257@aol.com' && spoofer" @click="spoofUser">Spoof</button>
-        <button v-if="spoofing" @click="stopSpoofing()">Stop Spoofing</button>
-      </div>
-      <div class="hamburger-display" @click="toggleMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span v-if="loggedUser && loggedUser.email" @click="navTo('/dashboard')">Dashboard</span>
+        <div class="spoofing" v-if="loggedUser">
+          <el-button v-if="loggedUser && loggedUser.admin" type="primary" @click="navTo('/admin')">Admin</el-button>
+          <input type="text" v-if="loggedUser && loggedUser.admin" v-model="spoofer" v-on:keydown.enter="spoofUser()">
+          <button v-if="loggedUser.admin && spoofer" @click="spoofUser">Spoof</button>
+          <button v-if="spoofing" @click="stopSpoofing()">Stop Spoofing</button>
+        </div>
       </div>
       <div class="menu" v-if="menuOpen">
         <span v-if="(!GoogleAuth || (GoogleAuth && !GoogleAuth.isSignedIn.le)) && !signedIn" @click="logIn()">Log In</span>
@@ -205,7 +203,7 @@ export default {
       }
     },
     logIn() {
-      this.$router.push('/login')
+      this.$router.push('/login');
     },
     logOut() {
       this.menuOpen = false;
@@ -217,14 +215,12 @@ export default {
           vm.profile = null;
         })
       }
-      if(vm.signedIn) {
-        this.$store.commit('updateSignInStatus', false);
-        this.$store.commit('updateLoggedUser', {});
-        let url = config.baseUrl + '/users/logout';
-        axios.post(url).then(response => response)
-        localStorage.removeItem('user');
-        vm.$router.push('/login')
-      }
+      this.$store.commit('updateSignInStatus', false);
+      this.$store.commit('updateLoggedUser', {});
+      let url = config.baseUrl + '/users/logout';
+      axios.post(url).then(response => response)
+      localStorage.removeItem('user');
+      vm.$router.push('/login')    
     },
     testApp() {
       let url = config.backendUrl + "/users/modify";
@@ -390,7 +386,6 @@ export default {
   }
 
   .menu-display {
-    margin-left: 200px;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -402,4 +397,15 @@ export default {
     margin: 0px 20px;
     min-width: 80px;
   }
+
+  @media (max-width: 500px) {
+    .menu-display {
+      margin-left: 0;
+      min-width: 0px;
+    }
+    .spoofing {
+      display: none;
+    }
+  }
+
 </style>

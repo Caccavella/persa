@@ -9,14 +9,13 @@
       <p>
         You'll have the ability to purchase your full results after taking the assessment.
       </p>
-      <span class="required">* Required</span>
+      <span class="required">* Required</span> <el-button @click="randomize()" v-if="loggedUser && loggedUser.admin">Randomize Answers</el-button>
     </div>
     <!-- eslint-disable -->
-    <div class="survey-items" v-if="!showMessage && !loading && survey.questions && survey.questions.length " v-for="question in survey.questions" :key="question.questionId">
+    <div class="survey-items" v-if="!showMessage && !loading && currentQuestions && currentQuestions.length && !question.hidden" v-for="question in currentQuestions" :key="question.questionId">
       <div class="question-container" v-if="question && !question.hidden">
         <span class="survey-question">
-          <span v-if="typeof question.questionId == 'number' && type == 'intelligence'">Q{{question.questionId-1}}</span>&nbsp;
-          <span v-if="typeof question.questionId == 'number' && (type == 'culture' || type == 'temperament' || type == 'neuro')">Q{{question.questionId}}</span>&nbsp;
+          <span>Q{{question.questionId}}</span>&nbsp;
           <span>{{question.text}}</span>
           <span class="required" v-if="question.required">*</span>
         </span>
@@ -48,78 +47,35 @@
         </span>
       </div>
     </div>
-    <el-button type="primary" class="submit-button" :disabled="allRequired" v-if="!showMessage && !loading" @click.$once="submitResponses()">Submit</el-button>
-  <span class="required" v-if="allRequired">Question {{unanswered}} still in need of an answer.</span>
-  <!-- <span class="required" v-if="!validatedEmail">Please enter a valid email address where required.</span> -->
-    <div class="result-container" v-if="showMessage && type == 'intelligence'">
-      <div class="result-header">Official Personabilities Assessment Summary:</div>
-      <!-- <div>Type: {{result}}</div> -->
-      <div class="result-message">
-        You are &nbsp; <div class="ad" v-if="vowels.includes(result[0])">an</div><div class="ad" v-else>&nbsp;a</div> &nbsp;<div class="result">{{result}}!</div> <span v-if="resultPercentage*1 < 10">Only a small percentage of the world shares your Intelligence Type. </span><span v-if="resultPercentage*1 >= 10">Roughly {{resultPercentage}}% of the world shares your Intelligence Type. </span>
-      </div>
-      <div class="result-message">
-        <span >{{resultShared}}</span>
-      </div>
-      <div class="result-text-segment">Your test results will outline the intricacies and depth of your personality and can be found in the full report. <a @click="viewReport()">Click here</a> to dig deep into your own personality and view your full report.</div>
-      <br>
-      <br>
-      <div class="result-blurb" v-html="resultText"></div>
-      <div v-if="9 == 0" class="" style="margin-top: 25px;">
-        Our nine-page report will go into detail about these strengths and others. <a @click="checkout()"> Click here</a> to purchase your detailed report so you can realize your full potential.
-        <!-- <p> -->
-          Included in the Standard Report are your:
-          <br>
-          <br>
-        <!-- </p> -->
-        <!-- <ul>
-          <li> -->
-            Personabilities Skills 
-          <br>
-          <!-- </li>
-          <li>             -->
-            Representative Fields of Study
-          <br>
-          <!-- </li>
-          <li>             -->
-            In-depth Discussion of Potential Careers & Professional Choices
-          <br>
-          <!-- </li>
-          <li>             -->
-            Personal Strengths & Weaknesses
-          <br>
-          <!-- </li>
-          <li> -->
-            Intelligence Tribe, Role, and Mode 
-          <br>
-          <!-- </li> -->
-        <!-- </ul> -->
-        <p>
-          Hungry for more? Pass on your next impulse buy on Amazon and get your personalized, detailed report today for just $15 instead!
-        </p>
-
-        <span style="display: flex; width: 100%; justify-content: center;">Want more info about your result? Purchase your full report <a style="margin-left: 5px;" @click="checkout()"> here</a>
-        </span>
-        </div>
-
-      <!-- <div class="generic-message">Learn More</div> -->
-      
-      <!-- <div class="result-text-header">Intelligence Model</div>
-      <div class="generic-message">
-        You are one of 24 different Types that are divided into four groups called Tribes. Each of the Types within your Tribe have similar abilities. Within your Tribe, you also have a Role that describes your particular skill set and what you do best within a team or group dynamic. Only a small percentage of people share your Type. We want you to find out more about your Intelligence Type so you can realize your full potential. Knowing more about your Intelligence Type will change your course of study, professional career, and life path. You will know what jobs are best suited for you. We strongly encourage you to take advantage of the information in this assessment so that you will Know Your Road to Find Your Home.
-      </div>
-      <div class="email-message">
-        You will receive an email shortly with your full results and more information about what your type means to you.
-      </div> -->
+    <div class="navigation-controls" v-if="!showMessage">
+      <el-button v-if="currentSection != 1" @click="currentSection-=1">Back</el-button>
+      <div v-else></div>
+      <el-button v-if="currentSection < maxSection" @click="currentSection+=1">Next</el-button>
+      <div v-else></div>
     </div>
-    <div class="result-container" v-if="showMessage && (type == 'culture' || type == 'temperament' || type == 'neuro')">
-      <div class="result-header">Official Personabilities Assessment Summary:</div>
+    <div class="progress-float">
+      <el-progress :text-inside="true" :show-text="true" :stroke-width="20" status="success" :percentage="percentage"></el-progress>
+    </div>
+    <el-button type="primary" class="submit-button" :disabled="allRequired" v-if="!showMessage && !loading && (currentSection == maxSection)" @click.$once="submitResponses()">Submit</el-button>
+  <span class="required" v-if="allRequired && currentSection == maxSection">Question {{unanswered}} still in need of an answer.</span>
+    <div class="result-container" v-if="showMessage">
+      <div class="result-header">{{type[0].toUpperCase() + type.substring(1)}} Type Assessment Summary:</div>
       <div class="result-message">
         You are &nbsp; <div class="ad" v-if="vowels.includes(result[0])">an</div><div class="ad" v-else>&nbsp;a</div> &nbsp;<div class="result">{{result}}!</div>
       </div>
       <div class="result-message">
         <span v-html="resultText"></span>
       </div>
+      <!-- <div class="return-container" v-if="type == 'intelligence'">
+        <el-input v-model="email" placeholder="Email"></el-input>
+        <el-input v-model="password" type="password" placeholder="Password"></el-input>
+        <el-button type="primary" @click="viewReport()">Create User & View Full Result</el-button>
+      </div> -->
+      <div class="return-container">
+        <el-button type="warning" @click="navTo('/dashboard')">Return to Dashboard</el-button>
+      </div>
     </div>
+    <el-backtop></el-backtop>
   </div>
 </template>
 
@@ -147,12 +103,13 @@ export default {
       resultText: '',
       resultPercentage: '',
       resultShared: '',
-      firstName: '',
       vowels: ["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"],
       unanswered: '',
       completed: false,
       loading: false,
-      flagFree: false
+      flagFree: false,
+      currentSection: 1,
+      maxSection: 999,
     }
   },
   computed: {
@@ -176,7 +133,17 @@ export default {
     },
     loggedUser() {
       return this.$store.state.loggedUser;
-    }
+    },
+    currentQuestions() {
+      let vm = this;
+      return vm.survey.questions.filter(el => el.sectionId == vm.currentSection);
+    },
+    percentage() {
+      let vm = this;
+      let totals = vm.survey.questions.filter(el => el.response !== "" && el.required);
+      console.log(totals.length, vm.survey.questions.filter(le => le.required).length, (totals.length/vm.survey.questions.filter(le => le.required).length)*100);
+      return ((totals.length/vm.survey.questions.filter(le => le.required).length)*100).toFixed(0)*1;
+    },
     // validatedEmail() {
     //   let vm = this;
     //   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -185,6 +152,7 @@ export default {
     // }
   },
   created() {
+    this.scrollTop();
     this.type = this.$route.params.type;
     if(this.type == 'intelligence') {
       // console.log(this.type, intelligence);
@@ -195,23 +163,17 @@ export default {
       this.survey = temperament;
     } else if(this.type == 'neuro') {
       this.survey = neuro;
-    }
-    try {
-      this.user = JSON.parse(localStorage.getItem('user'));
-    } catch(err) {
-      console.log(err);
-    }
-    if(this.loggedUser && this.survey && this.survey.questions && this.type == 'intelligence') {
-      this.survey.questions[0].response = this.user.name;
-      this.survey.questions[1].response = this.loggedUser.email;
-    } else {
-      console.log("No user");
-    }
+    }  
+    this.maxSection = this.survey?.questions?.[this.survey?.questions?.length-1]?.sectionId;
+    console.log(this.survey, this.maxSection);
     // console.log('651354534', this.user);
     // this.checkForPrevious();
     // this.scrambleAnswers();
   },
   methods: {
+    scrollTop() {
+      window.scrollTo(0, 0);
+    },
     scrambleAnswers() {
       let vm = this;
       vm.survey.questions.map(el => {
@@ -220,11 +182,14 @@ export default {
         }
       })
     },
+    navTo(route) {
+      this.$router.push(route);
+    },
     checkForPrevious() {
       let vm = this;
       let url = config.backendUrl + "/users/userEmail";
-      if(vm.user) {
-        let searchEmail = vm.user.email;
+      if(vm.loggedUser) {
+        let searchEmail = vm.loggedUser.email;
         axios.post(url, {user: searchEmail}).then(response => {
           if(response.data.result.intelResultsId) {            
             console.log("Yep", response);
@@ -248,31 +213,20 @@ export default {
       if(!vm.completed) {
         vm.completed = true;
         // console.log(vm.survey.questions[0]);
-        // console.log(vm.user);
-        let firstName = vm.survey.questions[0].response;
-        vm.firstName = firstName;
-        if(vm.user) {
-          firstName = vm.user.firstName;
-          vm.firstName = firstName;
-        } else {
-          vm.user = {
-            email: vm.survey.questions[1].response,
-            firstName: vm.survey.questions[0].response
-          }
-        }
+        // console.log(vm.user);        
         let url = config.baseUrl;
         if(vm.type == 'intelligence') url = url += "/algorithm/parseIntel";
         else if(vm.type == 'culture') url = url += "/algorithm/parseCulture";
         else if(vm.type == 'temperament') url = url += "/algorithm/parseTemperament";
         else if(vm.type == 'neuro') url = url += "/algorithm/parseNeuro";
-        axios.post(url, {questions: vm.survey, user: vm.user, name: firstName, level: vm.level}).then(response => {
+        axios.post(url, {questions: vm.survey, user: vm.loggedUser}).then(response => {
           console.log(response.data);
           if(response && response.data) {
             console.log('res', response);            
             let result = response.data.result;
             vm.result = result.name;
             vm.resultShared = result.shared;
-            let resultText = result.text.replace("[FIRST NAME]", firstName);
+            let resultText = result.text.replace("[FIRST NAME]", '');
             resultText = resultText.split('. ');
             resultText[9] += '.<br><br>';
             if(resultText[20]) resultText[20] += '.<br><br>';
@@ -290,8 +244,22 @@ export default {
       }
     },
     viewReport() {
-      let url = 'https://www.personabilities.com/result/' + this.result;
+      let url = 'https://www.personabilities.com/result/' + this.result.toLowerCase();
       window.location = url;    
+    },
+    randomize() {
+      let vm = this;
+      let maximum = 68;
+      if(this.type == 'temperament') {
+        maximum = 62;
+      } else if(this.type == 'neuro') {
+        maximum = 76;
+      } else if(this.type == 'culture') {
+        maximum = 84;
+      }
+      for (let index = 0; index < maximum; index++) {        
+        vm.survey.questions[index].response = Math.floor(Math.random() * 7)
+      }
     },
     async checkout() {
       let vm = this;
@@ -338,6 +306,7 @@ export default {
   font-size: 18px;
   flex-direction: column;
   align-items: center;
+  position: relative;
   width: 100vw;
   /* background-color: rgba(60, 171, 147, 0.267); */
   background-color: rgb(232, 238, 249);
@@ -440,7 +409,7 @@ export default {
 }
 
 .result-container {
-  height: 90.5vh;
+  min-height: 80.5vh;
   width: 80%;
   margin-top: 120px;
   display: flex;
@@ -492,8 +461,37 @@ a {
   min-width: 120px;
 }
 
+.return-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.navigation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+  margin-bottom: 100px;
+  width: 25%;
+}
+
+.progress-float {
+  position: sticky;
+  transform: translateY(-50px);
+  bottom: 0;
+  left: 0;
+  width: 200px;
+}
+
+.el-progress-bar__outer {
+  background-color: blue;
+}
+
 @media(max-width: 820px) {
   .survey-container {
+    position: relative;
     padding: 10px;
     width: calc(100vw - 20px)
   }
@@ -514,6 +512,9 @@ a {
   }
   .required {
     font-size: 16px;
+  }
+  .result-container {
+    margin-top: 20px;
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class='dashboard-container'>
-    <div class="chart-container" v-if="currentUser.role && currentUser.role == 'Manager' && view == 'company'">
+    <div class="chart-container" v-if="currentUser && currentUser.role && currentUser.role == 'Manager' && view == 'company'">
       <company></company>
       <div class="view-other-data">
         <el-button @click="view = 'user'">View As User</el-button>
@@ -15,7 +15,7 @@
            <img :src="require('../assets/general/' + assessment.logo)" alt="logo">
          </div>
          <div class="result-container">
-           <span>Your Result:</span>
+           <span>Your Result <span v-if="assessment.result && !assessment.available">(Beta Version)</span>:</span>
            <span v-if="assessment.result">{{assessment.result}}</span>
            <span v-else>Not Taken</span>
          </div>
@@ -39,7 +39,7 @@
           </el-button>
          </div>
        </div>
-        <div class="view-other-data" v-if="currentUser.role && currentUser.role == 'Manager'">
+        <div class="view-other-data" v-if="currentUser && currentUser.role && currentUser.role == 'Manager'">
           <el-button @click="view = 'company'">View As Manager</el-button>
         </div>
      </div>
@@ -76,7 +76,7 @@ export default {
           logo: 'CA.png',
           result: '',
           resultBlurb: '',
-          available: true,
+          available: false,
           destination: '/assessments/culture'
         },
         temperament: {
@@ -85,7 +85,7 @@ export default {
           logo: 'TA.png',
           result: '',
           resultBlurb: '',
-          available: true,
+          available: false,
           destination: '/assessments/temperament'
         },
         neuro: {
@@ -94,7 +94,7 @@ export default {
           logo: 'NA.png',
           result: '',
           resultBlurb: '',
-          available: true,
+          available: false,
           destination: '/assessments/neuro'
         },
       },
@@ -142,7 +142,7 @@ export default {
     getResult() {
       let vm = this;
       let url = config.backendUrl + '/users/userResults';
-      if(vm.currentUser.name && vm.currentUser.intelResultsId) {
+      if(vm.currentUser && vm.currentUser.name && vm.currentUser.intelResultsId) {
         axios.post(url, {resultsId: vm.currentUser.intelResultsId}).then(response => {
           if(response.data && response.data.results) {
             vm.assessmentsList.intelligence.resultsId = response.data.results.resultsId;
@@ -155,7 +155,7 @@ export default {
         // console.log('Reached, but not registering.');
       }
       
-      if(vm.currentUser.name && vm.currentUser.cultureResultsId) {
+      if(vm.currentUser && vm.currentUser.name && vm.currentUser.cultureResultsId) {
         axios.post(url, {resultsId: vm.currentUser.cultureResultsId}).then(response => {
           if(response.data && response.data.results) {
             vm.assessmentsList.culture.resultsId = response.data.results.resultsId;
@@ -167,7 +167,7 @@ export default {
       } else {
         // console.log('Reached, but not registering.');
       }
-      if(vm.currentUser.name && vm.currentUser.temperamentResultsId) {
+      if(vm.currentUser && vm.currentUser.name && vm.currentUser.temperamentResultsId) {
         axios.post(url, {resultsId: vm.currentUser.temperamentResultsId}).then(response => {
           if(response.data && response.data.results) {
             vm.assessmentsList.temperament.resultsId = response.data.results.resultsId;
@@ -179,7 +179,7 @@ export default {
       } else {
         // console.log('Reached, but not registering.');
       }
-      if(vm.currentUser.name && vm.currentUser.neuroResultsId) {
+      if(vm.currentUser && vm.currentUser.name && vm.currentUser.neuroResultsId) {
         axios.post(url, {resultsId: vm.currentUser.neuroResultsId}).then(response => {
           if(response.data && response.data.results) {
             vm.assessmentsList.neuro.resultsId = response.data.results.resultsId;
@@ -312,11 +312,11 @@ export default {
     flex-direction: column;
   }
   .dashboard-assessment-breakdown {
-    width: 100vw;
+    width: calc(100vw);
   }
   .report-column {
-    width: 100vw;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
   }
 }
 

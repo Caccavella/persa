@@ -1,18 +1,12 @@
 <template>
-  <div class="modal-shade" @click="closeModal()">
-    <div class='result-detail-container' @click.stop>
-      <div class="close-button" @click="closeModal()">&#10005;</div>
-      <div class="results-header">
-        <h1>{{resultInfo.name}}</h1>
-        <h3>{{resultInfo.result}}</h3>
-      </div>
+  <div >
+    <el-dialog :width="trackWidth" class="dialog-override" :visible.sync="dialogVisible" :before-close="closeModal" :title="resultInfo.name.toUpperCase()">
+      <h2>{{resultInfo.result}}</h2>
       <div class="results-body">
         <p>
-          {{resultData.shared}}          
+          {{resultData.shared}}
         </p>
-        <p>
-          {{resultData.text}}
-        </p>
+        <p v-html="processText(resultData.text)"></p>
       </div>
       <div class="success" v-if="successMessage != ''">
         {{successMessage}}
@@ -21,7 +15,7 @@
         <!-- <button v-if="!currentUser.intelResultPaid" @click="checkout()">Purchase Report</button> -->
         <el-button type="primary" v-if="checkType" @click="viewReport()">View Report</el-button>
       </div>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -41,6 +35,7 @@ export default {
       resultInfo: {},
       resultData: {},
       successMessage: "",      
+      dialogVisible: true
     }
   },
   created() {
@@ -59,11 +54,27 @@ export default {
       } else {
         return false
       }
+    },
+    trackWidth() {
+      console.log(window.devicePixelRatio * window.screen.width);
+      if(window.devicePixelRatio * window.screen.width > 1200) {
+        return "60%"
+      }
+      return '80%'
     }
   },
   methods: {
+    processText(resultText) {
+      let resText = resultText.split('. ');
+      resText[9] += '.<br><br>';
+      if(resText[20])  {
+        resText[20] += '.<br><br>';
+      }
+      return resText.join('. ').replace(/<br><br>\./g, '<br><br>').replace('. undefined.', "");     
+    },
     closeModal() {
       // console.log('shjould emit');
+      this.dialogVisible = false;
       EventService.$emit('closeModal', 'test');
     },
     async checkout() {
@@ -100,7 +111,7 @@ export default {
       }
     },
     viewReport() {
-      let url = 'https://www.personabilities.com/result/' + this.resultInfo.result;
+      let url = 'https://www.personabilities.com/result/' + this.resultInfo.result.toLowerCase();
       window.location = url;    
     },
     resendResults() {
@@ -142,13 +153,6 @@ export default {
   position: relative;
 }
 
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  cursor: pointer;
-}
-
 h1 {
   text-transform: capitalize;
 }
@@ -156,6 +160,11 @@ h1 {
 .purchase-report-container {
   display: flex;
   justify-content: center;
+}
+
+.results-body p {
+  word-break: keep-all;
+  font-size: 16px;
 }
 
 /* .purchase-report-container button {
@@ -177,6 +186,9 @@ h1 {
   display: flex;
   justify-content: center;
   font-size: 18px;
+}
+
+@media(max-width: 600px) {
 }
 
 </style>
