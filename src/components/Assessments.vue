@@ -6,9 +6,6 @@
       <p>
         The Personabilities assessment contains questions that deal with your intelligence 'type', working style, and personal interests. Please answer each question as honestly and accurately as possible. On questions scored from 0-7 '0' = completely disagree and '7' = completely agree.
       </p>
-      <p>
-        You'll have the ability to purchase your full results after taking the assessment.
-      </p>
       <span class="required">* Required</span> <el-button @click="randomize()" v-if="loggedUser && loggedUser.admin">Randomize Answers</el-button>
     </div>
     <!-- eslint-disable -->
@@ -48,7 +45,7 @@
       </div>
     </div>
     <div class="navigation-controls" v-if="!showMessage">
-      <el-button v-if="currentSection != 1" @click="currentSection-=1">Back</el-button>
+      <el-button v-if="currentSection !== 1" @click="currentSection-=1">Back</el-button>
       <div v-else></div>
       <el-button v-if="currentSection < maxSection" @click="currentSection+=1">Next</el-button>
       <div v-else></div>
